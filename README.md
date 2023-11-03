@@ -1,2 +1,2 @@
-# Similarity finder 
+# Similarity finder
 The similarity finder is based on https://github.com/daveshap/LiteratureReviewBot/tree/main 's embeddings. After downloading the embedded arxiv.org papers, the similarity finder can be used to find similar papers to a given paper.
