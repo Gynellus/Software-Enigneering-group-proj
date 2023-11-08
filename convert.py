@@ -1,7 +1,9 @@
+# pip install requests, PyMuPDF, bs4, io
 import os
 import requests
 from bs4 import BeautifulSoup
-import fitz
+import fitz  # PyMuPDF
+
 from io import BytesIO
 
 def convert_input_to_string(input_data):
@@ -10,10 +12,10 @@ def convert_input_to_string(input_data):
         _, file_extension = os.path.splitext(input_data)
 
         if file_extension.lower() == '.pdf':
-            document = fitz.open(input_data)
             text = ''
-            for page in document:
-                text += page.get_text()
+            with fitz.open(input_data) as document:
+                for page in document:
+                    text += page.get_text()
             return text
         else:
             return 'Unsupported file format'
@@ -23,12 +25,12 @@ def convert_input_to_string(input_data):
         try:
             response = requests.get(input_data)
             response.raise_for_status()
-            content_type = response.headers['Content-Type']
-            if 'application/pdf' in content_type:
-                document = fitz.open(stream=BytesIO(response.content), filetype="pdf")
-                text = ''
-                for page in document:
-                    text+= page.get_text()
+            content_type = response.headers.get('Content-Type')
+            if content_type and 'application/pdf' in content_type:
+                with fitz.open(stream=BytesIO(response.content), filetype="pdf") as document:
+                    text = ''
+                    for page in document:
+                        text += page.get_text()
                 return text
             else:
                 soup = BeautifulSoup(response.content, 'html.parser')
@@ -43,5 +45,3 @@ def convert_input_to_string(input_data):
     # Case 4: Other data types (e.g., numbers, lists, etc.)
     else:
         return "Unsupported data format"
-
-
