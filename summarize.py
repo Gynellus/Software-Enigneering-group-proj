@@ -1,9 +1,10 @@
-import openai
 import os
 
 import openai
 
 def summarize(article):
+    if not article:
+        raise ValueError("Input text cannot be empty.")
     # Load OpenAI API key
     if 'openai_API_key.txt' not in os.listdir():
         raise Exception("Please add your OpenAI API key to openai_API_key.txt to the main directory of this project.")
@@ -54,3 +55,5 @@ def summarize(article):
         summary = completion.choices[0].message.content
 
     return summary
+
+print(summarize("pdfs/The_Role_of_Emotions_in_Reading_Literary.pdf"))
